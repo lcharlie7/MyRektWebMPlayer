@@ -6,29 +6,53 @@
         xmlns:local="clr-namespace:MyMediaPlayer"
         mc:Ignorable="d"
         Title="MyRektWebMPlayer" Height="300" Width="300"
-        MinWidth="300" SizeToContent="WidthAndHeight">
-    <DockPanel>
-        <StatusBar DockPanel.Dock="Bottom">
-            <StatusBarItem>
+        MinWidth="300" SizeToContent="WidthAndHeight"
+        Background="Black">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <StatusBar Grid.Row="2">
+            <StatusBar.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+                </ItemsPanelTemplate>
+            </StatusBar.ItemsPanel>
+            <StatusBarItem Grid.Column="1">
                 <Button x:Name="button1" Content="Play" Click="button1_Click"/>
             </StatusBarItem>
-            <StatusBarItem>
+            <StatusBarItem Grid.Column="2">
                 <Button x:Name="button2" Content="Pause" Click="button2_Click"/>
             </StatusBarItem>
-            <StatusBarItem>
+            <StatusBarItem Grid.Column="3">
                 <Button x:Name="button3" Content="Stop" Click="button3_Click"/>
             </StatusBarItem>
-            <StatusBarItem>
+            <StatusBarItem Grid.Column="4">
                 <Button x:Name="button4" Content="Add Media" Click="button4_Click"/>
             </StatusBarItem>
-            <StatusBarItem>
-                <Label x:Name="label1" Content=""/>
+            <Separator/>
+            <StatusBarItem Grid.Column="6">
+                <TextBlock Name="labelProgress">00:00:00</TextBlock>
+            </StatusBarItem>
+            <StatusBarItem HorizontalContentAlignment="Stretch" Grid.Column="5">
+                <Slider Name="progSli" Thumb.DragStarted="progSli_DragStarted" Thumb.DragCompleted="progSli_DragCompleted" ValueChanged="progSli_ValueChanged"></Slider>
             </StatusBarItem>
         </StatusBar>
-        <MediaElement x:Name="mediaElement1" LoadedBehavior="Manual" MaxHeight="980" MaxWidth="1800" Stretch="None" MinHeight="300" MinWidth="300"/>
-        <DockPanel.Background>
+        <MediaElement x:Name="mediaElement1" LoadedBehavior="Manual" MaxHeight="980" MaxWidth="1800" Stretch="None" MinHeight="300" MinWidth="300" Grid.Row="1"/>
+        <Grid.Background>
             <ImageBrush ImageSource="Medias/MediaDoge.png" Stretch="None"></ImageBrush>
-        </DockPanel.Background>
-    </DockPanel>
-    
+        </Grid.Background>
+    </Grid>
 </Window>

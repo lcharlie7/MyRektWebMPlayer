@@ -14,7 +14,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.IO;
-
+using System.Windows.Threading;
+using System.Windows.Controls.Primitives;
 
 namespace MyMediaPlayer
 {
@@ -24,10 +25,27 @@ namespace MyMediaPlayer
     public partial class MainWindow : Window
     {
         private string mediaName;
+        private bool isPlaying = false;
+        private bool userIsDraggingSlider = false;
 
         public MainWindow()
         {
             InitializeComponent();
+
+            DispatcherTimer timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromSeconds(1);
+            timer.Tick += timer_Tick;
+            timer.Start();
+        }
+
+        private void timer_Tick(object sender, EventArgs e)
+        {
+            if ((mediaElement1.Source != null) && (mediaElement1.NaturalDuration.HasTimeSpan) && (!userIsDraggingSlider))
+            {
+                progSli.Minimum = 0;
+                progSli.Maximum = mediaElement1.NaturalDuration.TimeSpan.TotalSeconds;
+                progSli.Value = mediaElement1.Position.TotalSeconds;
+            }
         }
 
         private void button4_Click(object sender, RoutedEventArgs e)
@@ -64,7 +82,23 @@ namespace MyMediaPlayer
         void mediaElement1_MediaOpened(object sender, RoutedEventArgs e)
         {
 
-            label1.Content = System.IO.Path.GetFileName(mediaElement1.Source.LocalPath);
+            Title = System.IO.Path.GetFileName(mediaElement1.Source.LocalPath) + " - MyRektWebMPlayer";
+        }
+
+        private void progSli_DragStarted(object sender, DragStartedEventArgs e)
+        {
+            userIsDraggingSlider = true;
+        }
+
+        private void progSli_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            labelProgress.Text = TimeSpan.FromSeconds(progSli.Value).ToString(@"hh\:mm\:ss");
+        }
+
+        private void progSli_DragCompleted(object sender, DragCompletedEventArgs e)
+        {
+            userIsDraggingSlider = false;
+            mediaElement1.Position = TimeSpan.FromSeconds(progSli.Value);
         }
     }
 }
