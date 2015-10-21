@@ -7,22 +7,28 @@
         mc:Ignorable="d"
         Title="MyRektWebMPlayer" Height="300" Width="300"
         MinWidth="300" SizeToContent="WidthAndHeight">
-    <Grid>
-        <Grid.ColumnDefinitions>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-        <ToolBar>
-            <Button x:Name="button1" Content="Play" Click="button1_Click"/>
-            <Button x:Name="button2" Content="Pause" Click="button2_Click"/>
-            <Button x:Name="button3" Content="Stop" Click="button3_Click"/>
-            <Button x:Name="button4" Content="Add Media" Click="button4_Click"/>
-        </ToolBar>
-        <Label x:Name="label1" Content="" HorizontalAlignment="Left" Margin="0,226,0,0" VerticalAlignment="Top" Width="292" Height="17" Grid.Row="1"/>
-        <MediaElement x:Name="mediaElement1" LoadedBehavior="Manual" Stretch="None" Margin="0,5,0,17" Grid.Row="1"/>
-
-    </Grid>
+    <DockPanel>
+        <StatusBar DockPanel.Dock="Bottom">
+            <StatusBarItem>
+                <Button x:Name="button1" Content="Play" Click="button1_Click"/>
+            </StatusBarItem>
+            <StatusBarItem>
+                <Button x:Name="button2" Content="Pause" Click="button2_Click"/>
+            </StatusBarItem>
+            <StatusBarItem>
+                <Button x:Name="button3" Content="Stop" Click="button3_Click"/>
+            </StatusBarItem>
+            <StatusBarItem>
+                <Button x:Name="button4" Content="Add Media" Click="button4_Click"/>
+            </StatusBarItem>
+            <StatusBarItem>
+                <Label x:Name="label1" Content=""/>
+            </StatusBarItem>
+        </StatusBar>
+        <MediaElement x:Name="mediaElement1" LoadedBehavior="Manual" MaxHeight="980" MaxWidth="1800" Stretch="None" MinHeight="300" MinWidth="300"/>
+        <DockPanel.Background>
+            <ImageBrush ImageSource="Medias/MediaDoge.png" Stretch="None"></ImageBrush>
+        </DockPanel.Background>
+    </DockPanel>
+    
 </Window>
