@@ -26,12 +26,12 @@ namespace MyMediaPlayer
     {
         private string mediaName;
         private bool userIsDraggingSlider = false;
-        private bool userIsDraggingVolume = false;
 
         public MainWindow()
         {
             InitializeComponent();
 
+            volume_Handler();
             DispatcherTimer timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromSeconds(1);
             timer.Tick += timer_Tick;
@@ -46,6 +46,14 @@ namespace MyMediaPlayer
                 progSli.Maximum = mediaElement1.NaturalDuration.TimeSpan.TotalSeconds;
                 progSli.Value = mediaElement1.Position.TotalSeconds;
             }
+        }
+
+        private void volume_Handler()
+        {
+            soundVolume.Minimum = 0;
+            soundVolume.Maximum = 1;
+            soundVolume.Value = 0.5;
+            mediaElement1.Volume = 0.5;
         }
 
         private void button4_Click(object sender, RoutedEventArgs e)
@@ -106,25 +114,30 @@ namespace MyMediaPlayer
         private void Grid_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             if (mediaElement1.Volume < 1 && e.Delta > 0)
+            {
                 mediaElement1.Volume += 0.1;
+                soundVolume.Value += 0.1;
+            }
             if (mediaElement1.Volume > 0 && e.Delta < 0)
+            {
                 mediaElement1.Volume += -0.1;
+                soundVolume.Value += -0.1;
+            }
         }
 
         private void soundVolume_DragStarted(object sender, RoutedEventArgs e)
         {
-            userIsDraggingVolume = true;
+            
         }
 
         private void soundVolume_DragCompleted(object sender, DragCompletedEventArgs e)
         {
-            userIsDraggingVolume = false;
             mediaElement1.Volume = soundVolume.Value;
         }
 
         private void soundVolume_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-
+            soundValue.Text = String.Format("{0:P0}", soundVolume.Value);
         }
     }
 }
