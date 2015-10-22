@@ -6,9 +6,9 @@
         xmlns:local="clr-namespace:MyMediaPlayer"
         mc:Ignorable="d"
         Title="MyRektWebMPlayer" Height="300" Width="300"
-        MinWidth="300" SizeToContent="WidthAndHeight"
+        MinWidth="300" MinHeight="300" SizeToContent="WidthAndHeight"
         Background="Black">
-    <Grid>
+    <Grid MouseWheel="Grid_MouseWheel">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -25,6 +25,7 @@
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                     </Grid>
@@ -47,10 +48,27 @@
                 <TextBlock Name="labelProgress">00:00:00</TextBlock>
             </StatusBarItem>
             <StatusBarItem HorizontalContentAlignment="Stretch" Grid.Column="5">
-                <Slider Name="progSli" Thumb.DragStarted="progSli_DragStarted" Thumb.DragCompleted="progSli_DragCompleted" ValueChanged="progSli_ValueChanged"></Slider>
+                <Slider Name="progSli" Thumb.DragStarted="progSli_DragStarted" Thumb.DragCompleted="progSli_DragCompleted" ValueChanged="progSli_ValueChanged" MinWidth="50"></Slider>
+            </StatusBarItem>
+            <StatusBarItem Grid.Column="7">
+                <ProgressBar Name="soundVolume" Width="50" Height="17" Maximum="1" Minimum="0" Value="{Binding ElementName=mediaElement1, Path=Volume}" Thumb.DragStarted="soundVolume_DragStarted" Thumb.DragCompleted="soundVolume_DragCompleted" ValueChanged="soundVolume_ValueChanged" />
+            </StatusBarItem>
+            <StatusBarItem Grid.Column="7">
+                <TextBlock Text="0.5">
+                    <TextBlock.Style>
+                        <Style>
+                            <Setter Property="TextBlock.Visibility" Value="Hidden"/>
+                            <Style.Triggers>
+                                <Trigger Property="UIElement.IsMouseOver" Value="True">
+                                    <Setter Property="TextBlock.Visibility" Value="Visible" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
             </StatusBarItem>
         </StatusBar>
-        <MediaElement x:Name="mediaElement1" LoadedBehavior="Manual" MaxHeight="980" MaxWidth="1800" Stretch="None" MinHeight="300" MinWidth="300" Grid.Row="1"/>
+        <MediaElement x:Name="mediaElement1" LoadedBehavior="Manual" MaxHeight="980" MaxWidth="1800" Stretch="None" Grid.Row="1"/>
         <Grid.Background>
             <ImageBrush ImageSource="Medias/MediaDoge.png" Stretch="None"></ImageBrush>
         </Grid.Background>

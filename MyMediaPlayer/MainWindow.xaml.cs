@@ -25,8 +25,8 @@ namespace MyMediaPlayer
     public partial class MainWindow : Window
     {
         private string mediaName;
-        private bool isPlaying = false;
         private bool userIsDraggingSlider = false;
+        private bool userIsDraggingVolume = false;
 
         public MainWindow()
         {
@@ -65,12 +65,14 @@ namespace MyMediaPlayer
 
         private void button1_Click(object sender, RoutedEventArgs e)
         {
+            mediaElement1.Visibility = Visibility.Visible;
             mediaElement1.Play();
         }
 
         private void button3_Click(object sender, RoutedEventArgs e)
         {
             mediaElement1.Stop();
+            mediaElement1.Visibility = Visibility.Hidden;
         }
 
         private void button2_Click(object sender, RoutedEventArgs e)
@@ -99,6 +101,30 @@ namespace MyMediaPlayer
         {
             userIsDraggingSlider = false;
             mediaElement1.Position = TimeSpan.FromSeconds(progSli.Value);
+        }
+
+        private void Grid_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (mediaElement1.Volume < 1 && e.Delta > 0)
+                mediaElement1.Volume += 0.1;
+            if (mediaElement1.Volume > 0 && e.Delta < 0)
+                mediaElement1.Volume += -0.1;
+        }
+
+        private void soundVolume_DragStarted(object sender, RoutedEventArgs e)
+        {
+            userIsDraggingVolume = true;
+        }
+
+        private void soundVolume_DragCompleted(object sender, DragCompletedEventArgs e)
+        {
+            userIsDraggingVolume = false;
+            mediaElement1.Volume = soundVolume.Value;
+        }
+
+        private void soundVolume_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+
         }
     }
 }
