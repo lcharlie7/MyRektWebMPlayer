@@ -16,6 +16,8 @@ using System.Windows.Shapes;
 using System.IO;
 using System.Windows.Threading;
 using System.Windows.Controls.Primitives;
+using Microsoft.WindowsAPICodePack.Shell;
+using Microsoft.WindowsAPICodePack.Shell.PropertySystem;
 
 namespace MyMediaPlayer
 {
@@ -25,14 +27,15 @@ namespace MyMediaPlayer
     public partial class MainWindow : Window
     {
         public string title = "MyRektWebMPlayer";
-        private string mediaName;
         private bool userIsDraggingSlider = false;
         private bool mediaPlayerIsPlaying = false;
+        private List<PlaylistItem> items = new List<PlaylistItem>();
+        private string currentTitle;
 
         public MainWindow()
         {
             InitializeComponent();
-
+            
             volume_Handler();
             DispatcherTimer timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromSeconds(1);
@@ -72,7 +75,11 @@ namespace MyMediaPlayer
             if (ofd.ShowDialog() == true)
             {
                 mediaElement1.Source = new Uri(ofd.FileName);
-                mediaName = mediaElement1.Source.ToString();
+                var file = ShellObject.FromParsingName(ofd.FileName);
+                currentTitle = file.Properties.GetProperty(SystemProperties.System.Title).ValueAsObject.ToString();
+                TimeSpan runtime = TimeSpan.FromTicks(Convert.ToInt64(file.Properties.GetProperty(SystemProperties.System.Media.Duration).ValueAsObject.ToString()));
+                items.Add(new PlaylistItem() { Name = currentTitle, RunTime = runtime.ToString(@"hh\:mm\:ss") });
+                playList.ItemsSource = items;
             }
         }
 
@@ -85,7 +92,7 @@ namespace MyMediaPlayer
         {
             mediaElement1.Visibility = Visibility.Visible;
             mediaPlayerIsPlaying = true;
-            Title = System.IO.Path.GetFileName(mediaElement1.Source.LocalPath) + title;
+            Title = System.IO.Path.GetFileName(mediaElement1.Source.LocalPath) + " - " + title;
             mediaElement1.Play();
         }
 
@@ -155,6 +162,12 @@ namespace MyMediaPlayer
         private void soundVolume_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             soundValue.Text = String.Format("{0:P0}", soundVolume.Value);
+        }
+
+        private void playlist_Hide(object sender, RoutedEventArgs e)
+        {
+            playlistPanel.Width = 0;
+            playlistSplitter.HorizontalAlignment = HorizontalAlignment.Right;
         }
     }
 }
