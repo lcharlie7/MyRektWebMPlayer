@@ -24,8 +24,10 @@ namespace MyMediaPlayer
     /// </summary>
     public partial class MainWindow : Window
     {
+        public string title = "MyRektWebMPlayer";
         private string mediaName;
         private bool userIsDraggingSlider = false;
+        private bool mediaPlayerIsPlaying = false;
 
         public MainWindow()
         {
@@ -56,43 +58,58 @@ namespace MyMediaPlayer
             mediaElement1.Volume = 0.5;
         }
 
-        private void button4_Click(object sender, RoutedEventArgs e)
+        private void Open_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+        }
+
+        private void Open_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.AddExtension = true;
             ofd.DefaultExt = "*.*";
-            ofd.Filter = "Media(*.*)|*.*";
-            ofd.ShowDialog();
-            if (ofd.FileName != "")
+            ofd.Filter = "All Files (*.*)|*.*";
+            if (ofd.ShowDialog() == true)
             {
-                mediaElement1.MediaOpened += new RoutedEventHandler(mediaElement1_MediaOpened);
                 mediaElement1.Source = new Uri(ofd.FileName);
                 mediaName = mediaElement1.Source.ToString();
             }
         }
 
-        private void button1_Click(object sender, RoutedEventArgs e)
+        private void Play_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = (mediaElement1 != null) && (mediaElement1.Source != null);
+        }
+
+        private void Play_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             mediaElement1.Visibility = Visibility.Visible;
+            mediaPlayerIsPlaying = true;
+            Title = System.IO.Path.GetFileName(mediaElement1.Source.LocalPath) + title;
             mediaElement1.Play();
         }
 
-        private void button3_Click(object sender, RoutedEventArgs e)
+        private void Stop_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = mediaPlayerIsPlaying;
+        }
+
+        private void Stop_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             mediaElement1.Stop();
+            mediaPlayerIsPlaying = false;
             mediaElement1.Visibility = Visibility.Hidden;
+            Title = title;
         }
 
-        private void button2_Click(object sender, RoutedEventArgs e)
+        private void Pause_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = mediaPlayerIsPlaying;
+        }
+
+        private void Pause_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             mediaElement1.Pause();
-
-        }
-
-        void mediaElement1_MediaOpened(object sender, RoutedEventArgs e)
-        {
-
-            Title = System.IO.Path.GetFileName(mediaElement1.Source.LocalPath) + " - MyRektWebMPlayer";
         }
 
         private void progSli_DragStarted(object sender, DragStartedEventArgs e)

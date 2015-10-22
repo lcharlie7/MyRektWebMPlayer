@@ -8,6 +8,12 @@
         Title="MyRektWebMPlayer" Height="300" Width="300"
         MinWidth="300" MinHeight="300" SizeToContent="WidthAndHeight"
         Background="Black">
+    <Window.CommandBindings>
+        <CommandBinding Command="ApplicationCommands.Open" CanExecute="Open_CanExecute" Executed="Open_Executed"/>
+        <CommandBinding Command="MediaCommands.Play" CanExecute="Play_CanExecute" Executed="Play_Executed"/>
+        <CommandBinding Command="MediaCommands.Pause" CanExecute="Pause_CanExecute" Executed="Pause_Executed"/>
+        <CommandBinding Command="MediaCommands.Stop" CanExecute="Stop_CanExecute" Executed="Stop_Executed"/>
+    </Window.CommandBindings>
     <Grid MouseWheel="Grid_MouseWheel">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -33,16 +39,24 @@
                 </ItemsPanelTemplate>
             </StatusBar.ItemsPanel>
             <StatusBarItem Grid.Column="1">
-                <Button x:Name="button1" Content="Play" Click="button1_Click"/>
+                <Button Command="MediaCommands.Play" Width="20" Height="20" >
+                    <Image Source="Medias/play.png" />
+                </Button>
             </StatusBarItem>
             <StatusBarItem Grid.Column="2">
-                <Button x:Name="button2" Content="Pause" Click="button2_Click"/>
+                <Button Command="MediaCommands.Pause" Width="20" Height="20">
+                    <Image Source="Medias/pause.png" />
+                </Button>
             </StatusBarItem>
             <StatusBarItem Grid.Column="3">
-                <Button x:Name="button3" Content="Stop" Click="button3_Click"/>
+                <Button Command="MediaCommands.Stop" Width="20" Height="20">
+                    <Image Source="Medias/stop.png"/>
+                </Button>
             </StatusBarItem>
             <StatusBarItem Grid.Column="4">
-                <Button x:Name="button4" Content="Add Media" Click="button4_Click"/>
+                <Button Command="ApplicationCommands.Open" Width="20" Height="20">
+                    <Image Source="Medias/open.png"/>
+                </Button>
             </StatusBarItem>
             <Separator/>
             <StatusBarItem Grid.Column="6">
