@@ -14,7 +14,7 @@
         <CommandBinding Command="MediaCommands.Pause" CanExecute="Pause_CanExecute" Executed="Pause_Executed"/>
         <CommandBinding Command="MediaCommands.Stop" CanExecute="Stop_CanExecute" Executed="Stop_Executed"/>
     </Window.CommandBindings>
-    <Grid MouseWheel="Grid_MouseWheel">
+    <Grid MouseWheel="Grid_MouseWheel" KeyUp="Grid_KeyUp">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -34,7 +34,6 @@
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
@@ -43,38 +42,38 @@
                     </Grid>
                 </ItemsPanelTemplate>
             </StatusBar.ItemsPanel>
-            <StatusBarItem Grid.Column="1">
+            <StatusBarItem Name="playButton" Grid.Column="1">
                 <Button Command="MediaCommands.Play" Width="20" Height="20" >
                     <Image Source="Medias/play.png" />
                 </Button>
             </StatusBarItem>
-            <StatusBarItem Grid.Column="2">
+            <StatusBarItem Name="pauseButton" Visibility="Hidden" Grid.Column="1">
                 <Button Command="MediaCommands.Pause" Width="20" Height="20">
                     <Image Source="Medias/pause.png" />
                 </Button>
             </StatusBarItem>
-            <StatusBarItem Grid.Column="3">
+            <StatusBarItem Grid.Column="2">
                 <Button Command="MediaCommands.Stop" Width="20" Height="20">
                     <Image Source="Medias/stop.png"/>
                 </Button>
             </StatusBarItem>
-            <StatusBarItem Grid.Column="4">
+            <StatusBarItem Grid.Column="3">
                 <Button Command="ApplicationCommands.Open" Width="20" Height="20">
                     <Image Source="Medias/open.png"/>
                 </Button>
             </StatusBarItem>
             <Separator/>
-            <StatusBarItem Grid.Column="6">
+            <StatusBarItem Grid.Column="5">
                 <TextBlock Name="labelProgress">00:00:00</TextBlock>
             </StatusBarItem>
-            <StatusBarItem HorizontalContentAlignment="Stretch" Grid.Column="5">
-                <Slider Name="progSli" Thumb.DragStarted="progSli_DragStarted" Thumb.DragCompleted="progSli_DragCompleted" ValueChanged="progSli_ValueChanged" MinWidth="50"></Slider>
+            <StatusBarItem HorizontalContentAlignment="Stretch" Grid.Column="4">
+                <Slider Name="progSli" Thumb.DragStarted="progSli_DragStarted" Thumb.DragCompleted="progSli_DragCompleted" Thumb.MouseLeftButtonUp="progSli_MouseLeftButtonUp"  ValueChanged="progSli_ValueChanged" IsMoveToPointEnabled="True" MinWidth="50"></Slider>
             </StatusBarItem>
-            <StatusBarItem Grid.Column="7">
+            <StatusBarItem Grid.Column="6">
                 <Slider Name="soundVolume" Width="50" Height="17" Thumb.DragStarted="soundVolume_DragStarted" Thumb.DragCompleted="soundVolume_DragCompleted" ValueChanged="soundVolume_ValueChanged" />
             </StatusBarItem>
-            <StatusBarItem Grid.Column="8">
-                <TextBlock Name="soundValue" Text="0.5" />
+            <StatusBarItem Grid.Column="7">
+                <TextBlock Name="soundValue" Text="50 %" />
             </StatusBarItem>
         </StatusBar>
         <MediaElement x:Name="mediaElement1" Grid.Row="1" LoadedBehavior="Manual" MaxHeight="980" MaxWidth="1800" Stretch="None"/>

@@ -31,6 +31,7 @@ namespace MyMediaPlayer
         private bool mediaPlayerIsPlaying = false;
         private List<PlaylistItem> items = new List<PlaylistItem>();
         private string currentTitle;
+        private bool mediaPlayerIsPaused = false;
 
         public MainWindow()
         {
@@ -75,12 +76,18 @@ namespace MyMediaPlayer
             if (ofd.ShowDialog() == true)
             {
                 mediaElement1.Source = new Uri(ofd.FileName);
-                var file = ShellObject.FromParsingName(ofd.FileName);
-                currentTitle = file.Properties.GetProperty(SystemProperties.System.Title).ValueAsObject.ToString();
-                TimeSpan runtime = TimeSpan.FromTicks(Convert.ToInt64(file.Properties.GetProperty(SystemProperties.System.Media.Duration).ValueAsObject.ToString()));
-                items.Add(new PlaylistItem() { Name = currentTitle, RunTime = runtime.ToString(@"hh\:mm\:ss") });
-                playList.ItemsSource = items;
+                getPlaylistInfos(ofd.FileName);
             }
+        }
+
+        // Works for video files
+        private void getPlaylistInfos(string filename)
+        {
+            var file = ShellObject.FromParsingName(filename);
+            currentTitle = file.Properties.GetProperty(SystemProperties.System.Title).ValueAsObject.ToString();
+            string runtime = TimeSpan.FromTicks(Convert.ToInt64(file.Properties.GetProperty(SystemProperties.System.Media.Duration).ValueAsObject.ToString())).ToString(@"hh\:mm\:ss");
+            items.Add(new PlaylistItem() { Name = currentTitle, RunTime = runtime });
+            playList.ItemsSource = items;
         }
 
         private void Play_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -91,9 +98,11 @@ namespace MyMediaPlayer
         private void Play_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             mediaElement1.Visibility = Visibility.Visible;
-            mediaPlayerIsPlaying = true;
-            Title = System.IO.Path.GetFileName(mediaElement1.Source.LocalPath) + " - " + title;
+            Title = System.IO.Path.GetFileName(currentTitle) + " - " + title;
             mediaElement1.Play();
+            mediaPlayerIsPlaying = true;
+            playButton.Visibility = Visibility.Hidden;
+            pauseButton.Visibility = Visibility.Visible;
         }
 
         private void Stop_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -106,6 +115,8 @@ namespace MyMediaPlayer
             mediaElement1.Stop();
             mediaPlayerIsPlaying = false;
             mediaElement1.Visibility = Visibility.Hidden;
+            pauseButton.Visibility = Visibility.Hidden;
+            playButton.Visibility = Visibility.Visible;
             Title = title;
         }
 
@@ -117,6 +128,8 @@ namespace MyMediaPlayer
         private void Pause_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             mediaElement1.Pause();
+            pauseButton.Visibility = Visibility.Hidden;
+            playButton.Visibility = Visibility.Visible;
         }
 
         private void progSli_DragStarted(object sender, DragStartedEventArgs e)
@@ -132,6 +145,11 @@ namespace MyMediaPlayer
         private void progSli_DragCompleted(object sender, DragCompletedEventArgs e)
         {
             userIsDraggingSlider = false;
+            mediaElement1.Position = TimeSpan.FromSeconds(progSli.Value);
+        }
+
+        private void progSli_MouseLeftButtonUp(object sender, RoutedEventArgs e)
+        {
             mediaElement1.Position = TimeSpan.FromSeconds(progSli.Value);
         }
 
@@ -168,6 +186,11 @@ namespace MyMediaPlayer
         {
             playlistPanel.Width = 0;
             playlistSplitter.HorizontalAlignment = HorizontalAlignment.Right;
+        }
+
+        private void Grid_KeyUp(object sender, KeyEventArgs e)
+        {
+            
         }
     }
 }
