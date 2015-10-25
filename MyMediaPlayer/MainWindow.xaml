@@ -36,8 +36,9 @@
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="40" />
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                     </Grid>
                 </ItemsPanelTemplate>
@@ -70,9 +71,12 @@
                 <Slider Name="progSli" Thumb.DragStarted="progSli_DragStarted" Thumb.DragCompleted="progSli_DragCompleted" Thumb.MouseLeftButtonUp="progSli_MouseLeftButtonUp"  ValueChanged="progSli_ValueChanged" IsMoveToPointEnabled="True" MinWidth="50"></Slider>
             </StatusBarItem>
             <StatusBarItem Grid.Column="6">
-                <Slider Name="soundVolume" Width="50" Height="17" Thumb.DragStarted="soundVolume_DragStarted" Thumb.DragCompleted="soundVolume_DragCompleted" ValueChanged="soundVolume_ValueChanged" />
+                <Button Name="fullScreen" Content="full" Click="fullScreen_Toggle"></Button>
             </StatusBarItem>
             <StatusBarItem Grid.Column="7">
+                <Slider Name="soundVolume" Width="50" Height="17" Thumb.DragStarted="soundVolume_DragStarted" Thumb.DragCompleted="soundVolume_DragCompleted" ValueChanged="soundVolume_ValueChanged" />
+            </StatusBarItem>
+            <StatusBarItem Grid.Column="8">
                 <TextBlock Name="soundValue" Text="50 %" />
             </StatusBarItem>
         </StatusBar>

@@ -18,6 +18,7 @@ using System.Windows.Threading;
 using System.Windows.Controls.Primitives;
 using Microsoft.WindowsAPICodePack.Shell;
 using Microsoft.WindowsAPICodePack.Shell.PropertySystem;
+using System.Collections.ObjectModel;
 
 namespace MyMediaPlayer
 {
@@ -29,9 +30,10 @@ namespace MyMediaPlayer
         public string title = "MyRektWebMPlayer";
         private bool userIsDraggingSlider = false;
         private bool mediaPlayerIsPlaying = false;
-        private List<PlaylistItem> items = new List<PlaylistItem>();
-        private string currentTitle;
-        private bool mediaPlayerIsPaused = false;
+        private ObservableCollection<PlaylistItem> items = new ObservableCollection<PlaylistItem>();
+        public string currentTitle;
+        private bool isFullScreen = false;
+        private Size previousMediaContainerSize = new Size();
 
         public MainWindow()
         {
@@ -54,15 +56,7 @@ namespace MyMediaPlayer
             }
         }
 
-        private void volume_Handler()
-        {
-            soundVolume.Minimum = 0;
-            soundVolume.Maximum = 1;
-            soundVolume.Value = 0.5;
-            mediaElement1.Volume = 0.5;
-        }
-
-        private void Open_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        public void Open_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = true;
         }
@@ -78,21 +72,6 @@ namespace MyMediaPlayer
                 mediaElement1.Source = new Uri(ofd.FileName);
                 getPlaylistInfos(ofd.FileName);
             }
-        }
-
-        // Works for video files
-        private void getPlaylistInfos(string filename)
-        {
-            var file = ShellObject.FromParsingName(filename);
-            currentTitle = file.Properties.GetProperty(SystemProperties.System.Title).ValueAsObject.ToString();
-            string runtime = TimeSpan.FromTicks(Convert.ToInt64(file.Properties.GetProperty(SystemProperties.System.Media.Duration).ValueAsObject.ToString())).ToString(@"hh\:mm\:ss");
-            items.Add(new PlaylistItem() { Name = currentTitle, RunTime = runtime });
-            playList.ItemsSource = items;
-        }
-
-        private void Play_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = (mediaElement1 != null) && (mediaElement1.Source != null);
         }
 
         private void Play_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -131,6 +110,19 @@ namespace MyMediaPlayer
             pauseButton.Visibility = Visibility.Hidden;
             playButton.Visibility = Visibility.Visible;
         }
+
+        private void Play_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = (mediaElement1 != null) && (mediaElement1.Source != null);
+        }
+
+        private void volume_Handler()
+        {
+            soundVolume.Minimum = 0;
+            soundVolume.Maximum = 1;
+            soundVolume.Value = 0.5;
+            mediaElement1.Volume = 0.5;
+        }        
 
         private void progSli_DragStarted(object sender, DragStartedEventArgs e)
         {
@@ -190,7 +182,27 @@ namespace MyMediaPlayer
 
         private void Grid_KeyUp(object sender, KeyEventArgs e)
         {
-            
+
+        }
+
+        private void fullScreen_Toggle(object sender, RoutedEventArgs e)
+        {
+            //isFullScreen = !isFullScreen;
+            //if (isFullScreen)
+        }
+
+        public void getPlaylistInfos(string filename)
+        {
+            var file = ShellObject.FromParsingName(filename);
+            string fileExt = System.IO.Path.GetExtension(filename);
+            string runtime = "";
+            if (file.Properties.GetProperty(SystemProperties.System.Title).ValueAsObject != null)
+                currentTitle = file.Properties.GetProperty(SystemProperties.System.Title).ValueAsObject.ToString();
+            else currentTitle = file.Name;
+            if (fileExt == ".wmv")
+                runtime = TimeSpan.FromTicks(Convert.ToInt64(file.Properties.GetProperty(SystemProperties.System.Media.Duration).ValueAsObject.ToString())).ToString(@"hh\:mm\:ss");
+            items.Add(new PlaylistItem() { Name = currentTitle, RunTime = runtime });
+            playList.ItemsSource = items;
         }
     }
 }
